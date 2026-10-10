@@ -1,0 +1,67 @@
+Verification repository: execution guide
+
+DATA-FREE CHECKS
+  python -m pip install -r requirements-support.txt
+  python -B tests/run_checks.py
+
+This runs the finite, masking, numerical, acquisition and reference-integrity
+checks. It does not require the SMS archive or invoke Lean. Assertions must
+remain enabled: do not use -O or PYTHONOPTIMIZE. Test reports and temporary
+fixtures are created outside the repository and cleaned up automatically.
+
+EXACT DATA-BACKED VERIFICATION
+The strict empirical gate requires Python 3.12.3, Unicode 15.0.0 and the
+numerical packages pinned in requirements-support.txt. A different runtime can
+run data-free checks but is not accepted as an exact empirical reproduction.
+Lean and its compatible leanchecker must already be installed as specified in
+lean/lean-toolchain. The verifiers do not install tools or download data.
+
+Acquire the UCI SMS Spam Collection ZIP separately and keep it outside the
+repository. Source: Almeida and Gomez Hidalgo, SMS Spam Collection (2011),
+UCI Machine Learning Repository, DOI 10.24432/C5CC84.
+Download: https://archive.ics.uci.edu/static/public/228/sms+spam+collection.zip
+ZIP SHA-256: 1587ea43e58e82b14ff1f5425c88e17f8496bfcdb67a583dbff9eefaf9963ce3
+SMSSpamCollection member SHA-256:
+  7d039a24a6083ed9ef0f806ebad56bbb976e3aeb8de05669173bfdc4996c239d
+Raw messages are not distributed here. A converted export is not equivalent
+to the required archive. The dataset is unnecessary for the data-free checks.
+
+Reconstruct support and fixed-budget outputs from bound predictions, without
+refitting, and perform the finite/formal checks:
+  python -B verify_study.py --data /path/to/sms.zip --work-dir /path/to/new-checks
+
+Use a work directory outside this repository. Each invocation creates a fresh
+directory, prints the path to verification.json, and exits nonzero on failure.
+The readout is verification_readout.json. Cached predictions are bound to
+ordered input fingerprints; cached fitting diagnostics do not claim a new fit.
+
+Refit and verify the support calculation, including Lean:
+  python -B verify_support.py --data /path/to/sms.zip --work-dir /path/to/checks
+
+Verify existing results with --existing-results on verify_support.py, or with
+--existing-support-results and --existing-followup-results on verify_study.py.
+For data-free finite checks plus Lean:
+  python -B verify_support.py --synthetic-only --work-dir /path/to/checks
+
+FIGURES AND TABLES
+  python -m pip install -r requirements-figures.txt
+  python -B support_readout.py --results /path/to/support/results.json --output /path/to/readout --figures
+Omit --figures to generate only the JSON readout. Existing output directories
+are never silently replaced. Figure metadata has no author name by default.
+
+REFERENCE INTEGRITY
+Scientific values, prediction fingerprints and exact record expectations are
+fixed. Source manifests bind code, specifications, references and proof files.
+Runtime metadata are recorded separately from exact scientific comparisons.
+The support specification's actual digest is validated, then mapped to its
+fixed protocol_comparison_sha256 identifier for scientific-content comparison.
+No numerical reference, tolerance or condition is changed by that mapping.
+
+SPECIFICATIONS
+  research/support_protocol.txt   Units, fitting, masks and finite audit.
+  followup/protocol.txt           Fixed-budget policies and exact sampling law.
+  lean/formal_scope.txt           Proof statements, assumptions and exclusions.
+
+TEST_REPORT.json records the checks performed on this distribution and the
+checks not rerun. A passed synthetic test is not empirical reproduction or a
+Lean build. SHA256SUMS binds the distributed files, excluding itself.

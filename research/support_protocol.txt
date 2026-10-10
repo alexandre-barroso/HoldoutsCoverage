@@ -1,0 +1,91 @@
+Finite-support verification specification
+
+INPUT AND UNITS
+Use the UCI SMS Spam Collection ZIP identified by the input digests in
+reference_expectations.json. Read strict UTF-8 records, removing only the final
+LF and splitting at the first tab. Keep raw strings unchanged. Labels are ham
+and spam. Never export raw messages, vocabulary, coefficients or checkpoints.
+The archive is acquired separately; its citation and download are in USAGE.txt.
+
+Define W(x) by splitting Unicode whitespace and joining with one space. Define
+F(x) as NFC(casefold(NFC(x))). The common key is C(x)=F(W(x)). Require all labels
+in a common group to agree. Keep the smallest raw representative in UTF-8
+lexicographic order and order groups by the UTF-8 bytes of C(x). Check both
+normalizers for surviving aliases and cross-pool overlap. Equal group weights,
+not message-frequency weights, define the finite target.
+
+The input has 5,574 rows, 5,171 distinct raw texts and 5,159 common groups.
+Input-only profiling found 4,764 whitespace-fixed and 407 changed raw types;
+casefolding fixed 84. Whitespace is primary; casefolding is a low-fixed-mass
+control. The fitting pool has 2,538 groups and assessment pool V has 2,621.
+These are checks on a fixed historical corpus, not a current population claim.
+
+HASHES AND TARGETS
+Use the exact domain separator in support_experiment.rank: it is part of the
+hash input, not a display label. Encode [separator, role, seed, text] as compact
+UTF-8 JSON with ensure_ascii=False and separators=(',', ':'). Interpret SHA-256
+as an unsigned big-endian integer H; B=2**256. The outer role uses C(x), seed
+zero, and 2*H<B for fitting. Other groups form V. All fitting operations use only
+the fitting pool; assessment predictions remain fixed.
+
+Use seeds 0 through 199. The select role uses raw representatives. Targets are
+cutoff_half (2*H<B), cutoff_fifth (5*H<B), all of V, and top_fifth (the lowest
+floor(len(V)/5) ranks). Break ties by raw UTF-8 bytes and record the realized
+maximum selected rank. Reject an empty target instead of omitting a seed.
+The same target is used by every normalization and observation arm for a seed.
+
+PREDICTORS
+Use C-normalized Unicode \w+ tokens, count unigrams and adjacent bigrams, and
+retain features occurring in at least two fitting messages. Typed tuple keys
+('u', token) and ('b', first, second) prevent feature collisions. Sort the
+vocabulary. All vocabulary, document frequencies and class priors use fitting
+messages only.
+
+Naive Bayes uses raw counts, additive smoothing alpha=1 and empirical class
+priors. Logistic regression uses raw counts times
+idf=log((1+n_fit)/(1+df))+1, then row L2 normalization; zero rows remain zero.
+Its objective is mean binary log loss plus ||w||**2/(2*C*n_fit), C=1, with an
+unpenalized intercept. L-BFGS-B starts from zero, permits 2,000 iterations and
+50 line-search steps, and uses gtol=1e-8 and ftol=1e-12. Require successful
+termination and maximum absolute gradient <=1e-5. Logistic probability >=0.5
+predicts spam; Naive Bayes ties and majority ties predict ham. Panel order is
+logistic, naive_bayes, majority. No outcome-dependent tuning is performed.
+
+OBSERVATION
+A label is visible when 5*H>=4*B. Reuse applies select to N(raw); separation
+applies split to N(raw), for N in {W,F}. Two additional arms thin the natural
+masks to their common minimum count using the budget role on raw text, again
+breaking ties by UTF-8 bytes. Empty visible sets are retained. The complete grid
+has two normalizations, four selections, four arms and 200 seeds: 6,400 records.
+For a selected fixed point with realized rank below the observation boundary,
+reuse cannot reveal its label. Separate roles remove that identical-rank
+implication without asserting statistical independence or representativeness.
+
+FINITE AUDIT
+Supply only predictions and visible labels; use -1 for every unavailable label.
+Seal the masked audits before adding full-reference losses. For a pair A,B, let
+d be its known zero-one loss-difference count and D_u the missing disagreement
+count. The finite difference lies in [(d-D_u)/n,(d+D_u)/n]. Its endpoints are
+attainable under independently unrestricted valid labels of distinct units.
+This is an envelope, not a confidence interval; interior values need not be
+attainable. Shared labels or other completion constraints change this result.
+
+A positive lower bound certifies B; a negative upper bound certifies A. Zero
+endpoints permit ties. A possible weak winner has all lower bounds <=0; labeling
+missing units with that predictor supplies a common witness. A robust weak
+winner has all upper bounds <=0. Report the full observed winner set, signed
+and absolute risk-difference errors, strict reversals, best/worst panel regret,
+coverage, interval widths and containment. Empty observation sets have explicit
+status and null numerical estimates. Report every condition and seed, means,
+medians and fifth/ninety-fifth percentiles; paired masks are not independent
+datasets. See lean/formal_scope.txt for the exact proof obligations and limits.
+
+VERIFICATION
+Tests enumerate weighted and multiclass completions, panel winners, integer
+boundaries, linked-label counterexamples, masked-label invariance, analytic
+logistic gradients and direct-loop Naive Bayes scores. Numerical expectations,
+prediction fingerprints and mask bindings are fixed in reference_expectations.json.
+The current specification file is checked against its actual digest before
+that digest is mapped to protocol_comparison_sha256 for the fixed scientific
+comparison. This mapping affects only the specification identifier: no
+numerical field is omitted, rebased, rounded or compared with a tolerance.

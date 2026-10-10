@@ -1,0 +1,46 @@
+Formal verification scope
+
+SupportBounds.lean uses the bundled Std library and the toolchain specified in
+lean-toolchain. The proof source and toolchain file are preserved unchanged.
+
+fixedpoint_exclusion:
+  N(x)=x and H(x)<a<=t imply H(N(x))<t.
+selected_max_exclusion:
+  N(x)=x and H(x)<=realized_max<t imply H(N(x))<t.
+comparison_interval:
+  The total integer loss difference lies between the known difference minus
+  and plus the missing disagreement count.
+lower_completion_attains / upper_completion_attains:
+  Preserve observed labels and label missing indices with A's / B's prediction
+  to attain the corresponding count endpoint.
+common_lower_completion:
+  One A completion attains its lower endpoint against every rival.
+possible_weak_winner_iff:
+  A is a weak winner under some agreeing completion exactly when all its
+  pairwise lower count endpoints are nonpositive.
+robust_weak_winner_iff:
+  A is a weak winner under every agreeing completion exactly when all its
+  pairwise upper count endpoints are nonpositive.
+
+The statements use finite lists of indices; repetitions retain multiplicity.
+Predictions and completions share a valid label type. The Python experiment
+separately checks distinct retained units and nonempty targets. Division by a
+positive target size is an order-preserving step outside the named integer
+proofs. Empty observed sets are allowed; normalized risk on an empty target is
+undefined. The missing-label sentinel -1 is not a valid prediction label.
+
+Completions assign valid labels independently to missing indices. Shared labels,
+fixed class totals or restricted label sets require a different feasible-set
+analysis. Arbitrary real-weight results, strict-winner equivalences, exact
+sampling laws, parsing, Unicode handling, hash independence, optimization and
+empirical truth are not certified by these declarations.
+
+verify_support.py builds into a fresh directory, inspects transitive axioms for
+all eight declarations and invokes the compatible leanchecker with --fresh.
+Only propext, Classical.choice and Quot.sound are permitted. Finite authored
+Python tests supplement, but do not replace, formal verification.
+
+For B=2**256 use holdoutCut=ceil(4*B/5) and selectionCut=ceil(B/2) or ceil(B/5).
+These correspond exactly to the implemented integer inequalities. Floor at the
+holdout boundary is not equivalent. The rank function must retain the same
+role and seed when applying an exclusion theorem.

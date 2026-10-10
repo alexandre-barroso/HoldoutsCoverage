@@ -1,0 +1,138 @@
+{
+  "status": "PASS_COMPLETED_PYTHON_CHECKS",
+  "completed_utc": "2026-10-10T17:47:46.059540+00:00",
+  "environment": {
+    "python": "3.13.5",
+    "unicode": "15.1.0",
+    "numpy": "2.3.5",
+    "scipy": "1.17.0",
+    "matplotlib": "3.10.8"
+  },
+  "checks": {
+    "included_test_command": "python -B tests/run_checks.py",
+    "weighted_panels_masks_weightings": 52392,
+    "weighted_label_completions": 120460,
+    "ordered_pair_checks": 314352,
+    "candidate_winner_checks": 314352,
+    "integer_exclusion_cases": 512,
+    "masked_label_invariance_fixtures": 584,
+    "additional_weighted_pair_configurations": 2970,
+    "additional_label_completions": 11772,
+    "binary_panel_configurations": 600,
+    "hypergeometric_cases": 2220,
+    "independently_enumerated_sampling_subsets": 41608,
+    "maximum_sampling_category_triples": 231,
+    "invalid_exact_law_fixtures_rejected": 7,
+    "acquisition_membership_cases": 128,
+    "reference_summary_corruption_fixtures_rejected": 11,
+    "invalid_support_bindings_rejected": 2,
+    "invalid_support_summaries_rejected": 4,
+    "invalid_support_manifests_rejected": 4,
+    "optimization_guards_checked": 2,
+    "parser_fixtures": 8,
+    "independent_hash_checks": 48,
+    "cli_help_checks": 9,
+    "logistic_gradient_max_error": 4.8318404832770057e-11,
+    "direct_loop_naive_bayes": "PASS",
+    "small_authored_predictor_fit": "PASS",
+    "bound_prediction_cache_rows_checked": 2621,
+    "source_bindings_checked": 37,
+    "specification_identifier_mapping": "PASS",
+    "unsupported_empirical_runtime_rejected": "PASS",
+    "workflow_syntax_and_test_command": "PASS_SYNTAX_ONLY"
+  },
+  "synthetic_pipeline_comparison": {
+    "status": "PASS_SYNTHETIC_REGRESSION_AND_REFERENCE_PRESERVATION",
+    "synthetic_input_rows": 700,
+    "support_records_compared": 6400,
+    "complete_scientific_projection_equal": true,
+    "masked_audit_bytes_equal": true,
+    "numerical_reference_values_unchanged": true,
+    "lean_sources_byte_identical": true,
+    "retained_function_ast_equality": {
+      "support_experiment.py": [
+        "common_key",
+        "count_matrix",
+        "describe",
+        "digest",
+        "features",
+        "fit_panel",
+        "fold",
+        "logistic_objective",
+        "numerical_checks",
+        "oracle_fields",
+        "rank",
+        "summarize",
+        "tfidf",
+        "whitespace"
+      ],
+      "followup/run_followup.py": [
+        "acquire",
+        "canonical",
+        "describe",
+        "digest",
+        "index_digest",
+        "permutation",
+        "sampling_plan",
+        "utc",
+        "verify_freeze",
+        "write_json"
+      ],
+      "followup/reconstruct.py": [
+        "cert",
+        "check_describe",
+        "close",
+        "describe",
+        "fold",
+        "h",
+        "ih",
+        "main",
+        "norm",
+        "rank"
+      ],
+      "followup/readout.py": [
+        "compute"
+      ]
+    },
+    "scope": "Complete before/after comparison on authored inputs in the available runtime; not an external-corpus empirical replay or Lean check."
+  },
+  "synthetic_rendering": {
+    "status": "PASS_SYNTHETIC_RENDER_SMOKE",
+    "formats": [
+      "pdf",
+      "png",
+      "jpg",
+      "svg"
+    ],
+    "charts_rendered": 2,
+    "image_files_verified": 4,
+    "pdf_pages_rendered": 2,
+    "artifact_checksums_verified": 9,
+    "existing_output_protection": "PASS",
+    "scope": "Renderer fixture with an in-memory input adapter only; no empirical reference acceptance was claimed.",
+    "visual_inspection": "PASS_BOTH_RENDERED_PDF_PAGES"
+  },
+  "not_rerun": {
+    "empirical_sms_replay": {
+      "status": "NOT_RUN",
+      "reason": "The separately acquired SMS archive and required empirical runtime were unavailable; network acquisition failed. Synthetic tests do not substitute for empirical reproduction."
+    },
+    "lean_compilation_and_kernel_replay": {
+      "status": "NOT_RUN_AS_REQUESTED",
+      "source_files_byte_identical": true,
+      "reason": "Proof and toolchain files retained unchanged; no Lean invocation was made."
+    },
+    "hosted_github_actions": {
+      "status": "NOT_RUN",
+      "reason": "Workflow syntax and its local test command were checked; no hosted execution is claimed."
+    }
+  },
+  "preservation": {
+    "numerical_algorithms_and_reference_values": "RETAINED",
+    "deterministic_hash_inputs_and_dependency_pins": "RETAINED",
+    "lean_source_sha256": "6c71e2cfdfd31c8957b6771b36b341bfd79edddf4edeb1f8bd090604d2fc8c26",
+    "lean_toolchain_sha256": "8733782dc070a99b312039cda424f601b80f3be6f6f512627da5ba25adc27632",
+    "reference_projection_sha256": "20813c49c06170f4cf9e2aec4b670a5ee816a80ab49d147af1106e74b0c8b4f5"
+  },
+  "integrity_note": "Source and specification bindings reflect the distributed files. The explicit one-field specification-identifier mapping preserves the fixed numerical reference; no numerical endpoint was rebased."
+}

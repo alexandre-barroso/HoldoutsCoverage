@@ -1,0 +1,69 @@
+Fixed-budget verification specification
+
+Use the input, canonical units, targets, fixed predictions and hash definitions
+in research/support_protocol.txt. This calculation acquires labels for fixed
+predictions; it does not refit models. Cached fitting diagnostics are not fresh
+fitting or coefficient-validation evidence.
+
+CONDITIONS AND POLICIES
+Use seeds 0 through 199 and three conditions: whitespace/half, casefold/half,
+and whitespace/all. The two half conditions share the same selected target S;
+all-selection repeats V. Use equal group weights and reject empty targets.
+The requested budget is 20 labels. The policies are original eligibility,
+separate eligibility, uniform sampling over S, and uniform sampling over the
+known LR/NB disagreement set Z. The first three require 20 eligible units;
+otherwise record BUDGET_UNATTAINABLE and undefined numerical error. Never top
+up, duplicate observations, silently reduce the budget or impute an error.
+Disagreement sampling uses k=min(20,len(Z)); empty Z has exact difference zero
+without labels, and a fully observed Z has a known finite pair difference.
+
+COUPLED ACQUISITIONS
+Order S by representative UTF-8 bytes. Use repetitions 0 through 31. Encode
+[separator, 'acquisition', selection_name, seed, repetition] as compact UTF-8
+JSON using the exact domain separator in run_followup.permutation. Interpret
+the first 16 SHA-256 bytes little-endian as the seed for Generator(PCG64).
+Filter one common permutation through each policy's eligible set and take the
+first k entries. Normalization is intentionally absent from this key; the two
+half conditions share uniform and disagreement acquisitions. All-selection
+uses its own selection-name key.
+
+Seal acquisition identities, capacities and prediction-only support counts
+before full-label outcome calculations. There are 76,800 acquisition slots
+and 2,400 target/policy exact-law slots. These are fixed-design calculations,
+not human blinding or new model configurations.
+
+ESTIMATION AND EXACT LAW
+The first three policies estimate the acquired mean LR-minus-NB zero-one
+loss difference. Disagreement sampling multiplies that mean by len(Z)/len(S).
+This scale belongs to the estimator, never to the logical count interval.
+Within eligible E let K_minus,K_zero,K_plus count differences -1,0,+1. The
+probability of sample counts (a,b,c), a+b+c=k, is
+choose(K_minus,a)*choose(K_zero,b)*choose(K_plus,c)/choose(len(E),k).
+Use exact integer combination weights and rational arithmetic, enumerating at
+most 231 triples for k<=20. Require exact probability-mass conservation.
+
+Compute expected signed, absolute and squared errors, order/tie/wrong-order
+probabilities, best/worst pair regret and certificate probabilities. Check the
+finite-population mean and variance formulas and independently enumerate small
+subsets. Retain the 32 realized acquisitions alongside exact-law expectations.
+An infeasible arm has no distribution. Empty and saturated disagreement sets
+are explicit special cases. The logical interval is (d +/- D_u)/len(S) under
+independently unrestricted missing binary labels, not a sampling confidence
+interval or a three-model winner result.
+
+REPORTING AND CHECKS
+Retain all capacities and histograms. Paired contrasts use common feasible
+targets: separate-original, uniform-original, separate-uniform, and
+disagreement-uniform. There are 82 common primary targets for comparisons
+with original eligibility; do not compare their mean as a paired effect with
+a 200-target mean. Descriptive seed averages are not population inference.
+
+The reference contracts check all scientific record bytes or complete canonical
+summaries, while checking execution metadata separately. Corruption fixtures
+exercise changed metrics, bool-for-number substitutions, lost records,
+malformed manifests and missing bindings. reconstruct.py is a separate
+implementation of masks, acquisitions, metrics, capacities and summaries; it
+uses sequential SciPy hypergeometric factors for exact-law cross-checks.
+readout.py also computes panel diagnostics, which are descriptive explanations
+rather than prospective endpoints. Successful execution does not establish
+annotation truth, population transport or a universal policy improvement.
